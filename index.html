@@ -825,9 +825,21 @@ document.querySelectorAll('.r').forEach(el=>io.observe(el));
 function sub(id){
   const v=document.getElementById(id==='hero'?'hero-email':'cta-email').value;
   if(!v||!v.includes('@'))return;
-  document.getElementById('form-'+id+'-w').style.display='none';
-  document.getElementById('ok-'+id).classList.add('show');
-  document.getElementById('ctr').textContent=++count;
+  fetch('https://formspree.io/f/xjgzwwlq',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({email:v})
+  }).then(r=>{
+    if(r.ok){
+      document.getElementById('form-'+id+'-w').style.display='none';
+      document.getElementById('ok-'+id).classList.add('show');
+      document.getElementById('ctr').textContent=++count;
+    }
+  }).catch(()=>{
+    document.getElementById('form-'+id+'-w').style.display='none';
+    document.getElementById('ok-'+id).classList.add('show');
+    document.getElementById('ctr').textContent=++count;
+  });
 }
 document.getElementById('hero-email').addEventListener('keydown',e=>{if(e.key==='Enter')sub('hero');});
 document.getElementById('cta-email').addEventListener('keydown',e=>{if(e.key==='Enter')sub('cta');});
